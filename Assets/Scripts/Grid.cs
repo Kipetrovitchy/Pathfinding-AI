@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,8 +6,6 @@ namespace Game
     public class Grid
     {
     #region Attributes
-        private int m_lastId = 0;
-
         private int m_width;
         private int m_height;
 
@@ -34,7 +31,7 @@ namespace Game
             {
                 for (int x = 0; x < m_width; ++x)
                 {
-                    m_cells[x, y] = new Cell(m_lastId++);
+                    m_cells[x, y] = new Cell();
                 }
             }
         }
@@ -70,12 +67,15 @@ namespace Game
                     x = - (m_size/2) - (m_size + m_padding) * i;
                     y = - (m_size/2) - (m_size + m_padding) * j;
 
-                    GameObject.Instantiate(cellPrefab, new Vector3(x, y), cellPrefab.transform.rotation).transform.localScale = new Vector3(m_size, 0.1f, m_size);
+                    GameObject obj = GameObject.Instantiate(cellPrefab, new Vector3(x, y), cellPrefab.transform.rotation);
+                    obj.transform.localScale = new Vector3(m_size, 0.1f, m_size);
+                    obj.GetComponent<MeshRenderer>().material = m_cells[i,j].ProvData.Terrain.Color;
                 }
             }
         }
 
-        public Cell CheckCell(Vector3 worldPos)
+        // Get a Cell by a world position
+        public Cell GetCell(Vector3 worldPos)
         {
             if (worldPos.x > 0 || worldPos.y > 0)
                 return null;
@@ -86,6 +86,20 @@ namespace Game
             if (x < m_width && y < m_height)
                 return m_cells[x, y];
             
+            return null;
+        }
+        // Get a Cell by its id
+        public Cell GetCell(int id)
+        {
+            if (id < 0)
+                return null;
+
+            foreach (Cell cell in m_cells)
+            {
+                if (cell.Id == id)
+                    return cell;
+            }
+
             return null;
         }
 

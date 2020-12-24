@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game
 {
@@ -35,9 +33,7 @@ namespace Game
             // set the default camera settings
             mainCam.transform.position = new Vector3(-columns / 2 * (size + padding), -rows / 2 * (size + padding), 5);
             Camera cam = mainCam.GetComponent<Camera>();
-            cam.orthographicSize = 20;
-
-            
+            cam.orthographicSize = 12;
             
             /* Test adjacent system
             m_map.Print();
@@ -58,7 +54,7 @@ namespace Game
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 pos = mainCam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
-                selected = m_map.CheckCell(pos);
+                selected = m_map.GetCell(pos);
             }
         }
 

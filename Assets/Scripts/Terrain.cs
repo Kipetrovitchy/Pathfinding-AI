@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game
 {
@@ -26,6 +24,7 @@ namespace Game
         private float m_atkMod;
         private float m_movMod;
 
+        private Material m_color;
         private Sprite m_typeSprite;
     #endregion // Attributes
 
@@ -33,26 +32,25 @@ namespace Game
         // Constructor by default
         public Terrain()
         {
-            m_type = Type.Plains;
-            InitModifiers(1f, 1f, 1f);
+            Init(Type.Plains, 1.00f, 1.00f, 1.00f, "Plains");
         }
         // Constructor by value
         public Terrain(Type type)
         {
             switch(type)
             {
-                case Type.Desert:    Init(type, 1f, 1f, 0.5f, "ill_prov_desert");       break;
-                case Type.Forest:    Init(type, 1.25f, 1f, 0.75f, "ill_prov_forest");   break;
-                case Type.Hills:     Init(type, 1.5f, 0.75f, 0.75f, "ill_prov_hills");  break;
-                case Type.Jungle:    Init(type, 1.75f, 0.75f, 0.5f, "ill_prov_jungle"); break;
-                case Type.Mountains: Init(type, 2f, 0.5f, 0.25f, "ill_prov_mountains"); break;
-                case Type.Plains:    Init(type, 1f, 1f, 1f, "ill_prov_plains");         break;
-                case Type.Sea:       Init(type, 1f, 1f, 1f, "ill_prov_sea");            break;
-                case Type.Swamp:     Init(type, 1.25f, 0.75f, 0.5f, "ill_prov_swamp");  break;
-                case Type.Urban:     Init(type, 1.25f, 0.75f, 1f, "ill_prov_urban");    break;
+                case Type.Desert:    Init(type, 1.00f, 1.00f, 0.50f, "Desert");      break;
+                case Type.Forest:    Init(type, 1.25f, 1.00f, 0.75f, "Forest");      break;
+                case Type.Hills:     Init(type, 1.50f, 0.75f, 0.75f, "Hills");       break;
+                case Type.Jungle:    Init(type, 1.75f, 0.75f, 0.50f, "Jungle");      break;
+                case Type.Mountains: Init(type, 2.00f, 0.50f, 0.25f, "Mountains");   break;
+                case Type.Plains:    Init(type, 1.00f, 1.00f, 1.00f, "Plains");      break;
+                case Type.Sea:       Init(type, 1.00f, 1.00f, 1.00f, "Sea");         break;
+                case Type.Swamp:     Init(type, 1.25f, 0.75f, 0.50f, "Swamp");       break;
+                case Type.Urban:     Init(type, 1.25f, 0.75f, 1.00f, "Urban");       break;
             }
         }
-        public Terrain(Type type, float atk, float def, float mov)
+        public Terrain(Type type, float def, float atk, float mov)
         {
             m_type = type;
             m_defMod = def;
@@ -70,11 +68,11 @@ namespace Game
     #endregion // Constructors
 
     #region Accessors
-        public Type GetType() { return m_type; }
-        public void SetType(Type type) { m_type = type; }
+        public Type TerrainType { get => m_type; set => m_type = value; }
         public float DefMod { get => m_defMod; set => m_defMod = value; }
         public float AtkMod { get => m_atkMod; set => m_atkMod = value; }
         public float MovMod { get => m_movMod; set => m_movMod = value; }
+        public Material Color { get => m_color; set => m_color = value; }
         public Sprite TypeSprite {get => m_typeSprite; set => m_typeSprite = value; }
     #endregion // Accessors
 
@@ -83,7 +81,8 @@ namespace Game
         private Terrain CreateDesert()
         {
             Terrain ter = new Terrain(Type.Desert, 1f, 1f, 0.5f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_desert");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Desert");
+            ter.m_color = Resources.Load<Material>("Materials/Desert");
 
             return ter;
         }
@@ -91,7 +90,8 @@ namespace Game
         private Terrain CreateForest()
         {
             Terrain ter = new Terrain(Type.Forest, 1.25f, 1f, 0.75f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_forest");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Forest");
+            ter.m_color = Resources.Load<Material>("Materials/Forest");
             
             return ter;
         }
@@ -99,7 +99,8 @@ namespace Game
         private Terrain CreateHills()
         {
             Terrain ter = new Terrain(Type.Hills, 1.5f, 0.75f, 0.75f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_hills");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Hills");
+            ter.m_color = Resources.Load<Material>("Materials/Hills");
 
             return ter;
         }
@@ -107,7 +108,8 @@ namespace Game
         private Terrain CreateJungle()
         {
             Terrain ter = new Terrain(Type.Jungle, 1.75f, 0.75f, 0.5f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_jungle");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Jungle");
+            ter.m_color = Resources.Load<Material>("Materials/Jungle");
 
             return ter;
         }
@@ -115,7 +117,8 @@ namespace Game
         private Terrain CreateMountains()
         {
             Terrain ter = new Terrain(Type.Mountains, 2f, 0.5f, 0.25f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_mountains");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Mountains");
+            ter.m_color = Resources.Load<Material>("Materials/Mountains");
 
             return ter;
         }
@@ -123,7 +126,8 @@ namespace Game
         private Terrain CreatePlains()
         {
             Terrain ter = new Terrain(Type.Plains, 1f, 1f, 1f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_plains");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Plains");
+            ter.m_color = Resources.Load<Material>("Materials/Plains");
 
             return ter;
         }
@@ -131,7 +135,8 @@ namespace Game
         private Terrain CreateSwamp()
         {
             Terrain ter = new Terrain(Type.Swamp, 1.25f, 0.75f, 0.5f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_swamp");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Swamp");
+            ter.m_color = Resources.Load<Material>("Materials/Swamp");
 
             return ter;
         }
@@ -139,19 +144,23 @@ namespace Game
         private Terrain CreateUrban()
         {
             Terrain ter = new Terrain(Type.Urban, 1.25f, 0.75f, 1f);
-            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/ill_prov_urban");
+            ter.m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/Urban");
+            ter.m_color = Resources.Load<Material>("Materials/Urban");
 
             return ter;
         }
+        
         // Init
-        private void Init(Type type, float atk, float def, float mov, string sprite)
+        private void Init(Type type, float def, float atk, float mov, string fileName)
         {
             m_type = type;
 
             InitModifiers(atk, def, mov);
 
-            string path = "Sprites/Terrain/" + sprite;
-            m_typeSprite = Resources.Load<Sprite>(path);
+            m_typeSprite = Resources.Load<Sprite>("Sprites/Terrain/" + fileName);
+            m_color = Resources.Load<Material>("Materials/" + fileName);
+
+            Debug.Log(m_color);
         }
         // Init combat modifiers
         private void InitModifiers(float def, float atk, float mov)
