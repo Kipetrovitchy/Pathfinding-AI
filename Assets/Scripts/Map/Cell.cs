@@ -18,19 +18,27 @@ namespace Game
         * <other Cell, distance between the two cells>
         */
         private Dictionary<Cell, float> m_adjacentCells;
+
+        [HideInInspector]
+        public GameObject m_object;
+        public Entity occupant;
     #endregion // Attributes
 
     #region Constructors
         // Constructor by default
-        // public Cell()
-        // {
-        //     m_id = m_lastId++;
-        //     m_provData = new Province();
+        public Cell()
+        {
+            m_id = m_lastId++;
+            
+            int rand = (int)Random.Range(0, ((int)Terrain.Type.Count) - 1);
+            Terrain.Type type = (Terrain.Type)rand;
+            
+            m_provData = new Province(m_id.ToString(), type);
 
-        //     m_adjacentCells = new Dictionary<Cell, float>();
-        // }
+            m_adjacentCells = new Dictionary<Cell, float>();
+        }
         // Constructor by value
-        public Cell(string name = "", Game.Terrain.Type type = Terrain.Type.Count)
+        public Cell(int id, string name, Terrain.Type type)
         {
             if (type == Terrain.Type.Count)
             {
@@ -38,7 +46,11 @@ namespace Game
                 type = (Terrain.Type)rand;
             }
             
-            m_id = m_lastId++;
+            if (id == -1 || id < m_lastId)
+                m_id = m_lastId++;
+            else
+                m_id = id;
+
             if (name == "")
                 name = m_id.ToString();
             m_provData = new Province(name, type);
@@ -63,13 +75,19 @@ namespace Game
 
     #region Functions
         // Add a new adjacent Cell to this Cell
-        public bool AddAdjacentCell(Cell cell, float dist)
+        public bool AddAdjacentCell(Cell cell, float dist = 0)
         {
             // Check if is not trying to link to itself
             if (cell.Id != m_id)
             {
-                m_adjacentCells.Add(cell, dist);
-                cell.m_adjacentCells.Add(this, dist);
+                if (dist == 0)
+                    dist = (cell.ProvData.Terrain.MovMod + m_provData.Terrain.MovMod) / 2;
+
+                if (!IsAdjacentTo(cell))
+                {
+                    m_adjacentCells.Add(cell, dist);
+                    cell.m_adjacentCells.Add(this, dist);
+                }
                 return true;
             }
 

@@ -135,15 +135,23 @@ namespace Game
     }
     
     // Handle Unit movement
-    public void MoveTo(Cell target)
+    public bool MoveTo(Cell target)
     {
-        if (target == null)
-            return;
+        if (target == null || target.occupant != null)
+            return false;
+
+        Vector3 pos = target.m_object.transform.position;
+        pos.z = 0.1f;
+        transform.position = pos;
+
+        target.occupant = this;
 
         /* TODO : 
             Get Path to target
             Move the Unit to the target following the path
         */
+
+        return true;
     }
     // Handle Unit attacks
     public void Attack(Entity target)
@@ -168,7 +176,15 @@ namespace Game
     }
     public void FightBack(Entity e)
     {
+        if (e == null || !CanUnitAttack(e))
+            return;
 
+        /*TODO :
+            Check efficiency and terrain modifiers
+            Compute damages
+            Apply them
+            If the opponent isn't dead it fights back
+        */
     }
 
     #endregion // Functions

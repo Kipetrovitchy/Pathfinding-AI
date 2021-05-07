@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class Entity
+    public class Entity : MonoBehaviour
     {
     #region Enumerations
         public enum EntityType

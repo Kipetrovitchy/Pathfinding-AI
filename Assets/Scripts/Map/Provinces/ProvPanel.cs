@@ -19,12 +19,12 @@ public class ProvPanel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameManager.selected != null)
+        if (gameManager.selectedCell != null)
         {
             if (m_animator != null)
                 m_animator.SetBool("Open", true);
 
-            UpdatePanel(gameManager.selected);
+            UpdatePanel(gameManager.selectedCell);
         }
         else
         {
@@ -34,15 +34,15 @@ public class ProvPanel : MonoBehaviour
     }
 
     // Update the province panel with the information of the last selected province
-    public void UpdatePanel(Game.Cell selectedCell)
+    public void UpdatePanel(Game.Cell cell)
     {
         // Update name of the province
-        transform.GetChild(0).GetComponent<Text>().text = selectedCell.ProvData.Name;
+        transform.GetChild(0).GetComponent<Text>().text = cell.ProvData.Name;
         // Update the type of terrain of the province
-        transform.GetChild(1).GetComponent<Image>().sprite = selectedCell.ProvData.Terrain.TypeSprite;
+        transform.GetChild(1).GetComponent<Image>().sprite = cell.ProvData.Terrain.TypeSprite;
         // Update combat and movement modifiers of the province
-        transform.GetChild(2).GetChild(1).GetComponent<Text>().text = selectedCell.ProvData.Terrain.AtkMod.ToString();
-        transform.GetChild(3).GetChild(1).GetComponent<Text>().text = selectedCell.ProvData.Terrain.DefMod.ToString();
-        transform.GetChild(4).GetChild(1).GetComponent<Text>().text = selectedCell.ProvData.Terrain.MovMod.ToString();
+        transform.GetChild(2).GetChild(1).GetComponent<Text>().text = cell.ProvData.Terrain.AtkMod.ToString();
+        transform.GetChild(3).GetChild(1).GetComponent<Text>().text = cell.ProvData.Terrain.DefMod.ToString();
+        transform.GetChild(4).GetChild(1).GetComponent<Text>().text = cell.ProvData.Terrain.MovMod.ToString();
     }
 }

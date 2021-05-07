@@ -5,85 +5,73 @@ namespace Game
     public class GameManager : MonoBehaviour
     {
     #region Attributes
-        public GameObject mainCam;
-        
-        [SerializeField, Range(10.0f, 20.0f)]
-        private float m_camSpeed = 10.0f;
+        public Camera mainCam;
 
         private Grid m_map;
 
         public GameObject cellPrefab;
+        public GameObject unitPrefab;
 
         public int columns, rows;
         public float padding;
         public float size;
 
-        public Cell selected = null;
+        public Cell selectedCell = null;
+        public GameObject selectedEntity = null;
+
+        public LayerMask layer;
     #endregion
     #region Accessors
-        public float CamSpeed { get => m_camSpeed; set => m_camSpeed = value; }
+        public Grid Map { get => m_map; }
     #endregion
         // Start is called before the first frame update
         void Start()
         {
+            // m_map = new Grid("Assets/Resources/Maps/Test.json");
             m_map = new Grid(columns, rows, size, padding);
 
-            m_map.Draw(ref cellPrefab);
-
-            // set the default camera settings
-            mainCam.transform.position = new Vector3(-columns / 2 * (size + padding), -rows / 2 * (size + padding), 5);
-            Camera cam = mainCam.GetComponent<Camera>();
-            cam.orthographicSize = 12;
+            if (m_map.Cells != null)
+                m_map.Draw(ref cellPrefab);
             
-            /* Test adjacent system
-            m_map.Print();
+            // Place the camera above the first cell
+            Vector3 pos = m_map.Cells[0, 0].m_object.transform.position;
+            pos.z += 5;
+            mainCam.transform.position = pos;
 
-            m_map.Cells[0,0].AddAdjacentCell(m_map.Cells[0,1], 10);
-            m_map.Cells[0,0].AddAdjacentCell(m_map.Cells[1,0], 20);
+            CreateUnit(m_map.GetCell(19));
             
-            m_map.Print();
-            */
+            // Test adjacent system
+            //m_map.Print();
         }
 
         // Update is called once per frame
         void Update()
         {
-            MoveCam();
-            Zoom();
+            m_map.UpdateVisuals();
+        }
 
-            if (Input.GetMouseButtonDown(0))
+        public bool CreateUnit(Cell cell, string name = "", Game.Entity.EntityType eType = 0, Sprite skin = null, Game.Unit.UnitType uType = 0, int movR = 0, int atkR = 1, int visR = 1)
+        {
+            Vector3 pos = m_map.GetCellPos(cell);
+
+            GameObject obj = GameObject.Instantiate(unitPrefab, pos, unitPrefab.transform.rotation);
+            obj.transform.localScale = new Vector3(m_map.CellSize * 0.8f, m_map.CellSize * 0.8f, 0.1f);
+
+            Unit unit = obj.GetComponent<Unit>();
+            if (unit)
             {
-                Vector3 pos = mainCam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
-                selected = m_map.GetCell(pos);
+                unit.Name = name;
+                unit.SetMainType(eType);
+                unit.CellId = cell.Id;
+                unit.Skin = skin;
+                unit.SetUnitType(uType);
+                unit.MovRange = movR;
+                unit.AtkRange = atkR;
+                unit.VisRange = visR;
             }
-        }
 
-        // Handle the movement of the camera
-        void MoveCam()
-        {
-            Vector3 pos = mainCam.transform.position;
-            float frustrumSize = mainCam.GetComponent<Camera>().orthographicSize;
-
-            if (Input.GetKey("up"))
-                pos.y = Mathf.Min((pos.y + m_camSpeed * Time.deltaTime), 0);
-            else if (Input.GetKey("down"))
-                pos.y = Mathf.Max((pos.y - m_camSpeed * Time.deltaTime), -(m_map.Size * m_map.Height));
-
-            if (Input.GetKey("left"))
-                pos.x = Mathf.Min((pos.x + m_camSpeed * Time.deltaTime), 0);
-            else if (Input.GetKey("right"))
-                pos.x = Mathf.Max((pos.x - m_camSpeed * Time.deltaTime), -(m_map.Size * m_map.Width));
-
-            mainCam.transform.position = pos;
-        }
-        // Handle the zoom of the camera
-        void Zoom()
-        {
-            Camera cam = mainCam.GetComponent<Camera>();
-            if (Input.GetAxis("Mouse ScrollWheel") > 0) // closer
-                cam.orthographicSize = Mathf.Max(cam.orthographicSize-1, 1);
-            if (Input.GetAxis("Mouse ScrollWheel") < 0) // further
-                cam.orthographicSize = Mathf.Min(cam.orthographicSize+1, 20);
+            cell.occupant = unit;
+            return false;
         }
     }
 }
