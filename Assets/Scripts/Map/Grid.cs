@@ -155,7 +155,7 @@ namespace Game
                     obj.transform.localScale = new Vector3(m_cellSize, m_cellSize, 0.1f);
                     obj.GetComponent<MeshRenderer>().material = m_cells[i,j].ProvData.Terrain.Color;
 
-                    m_cells[i,j].m_object = obj;
+                    m_cells[i,j].Object = obj;
                 }
             }
         }
@@ -166,7 +166,7 @@ namespace Game
             {
                 for (int i = 0; i < m_width; ++i)
                 {
-                    m_cells[i,j].m_object.GetComponent<MeshRenderer>().material = m_cells[i,j].ProvData.Terrain.Color;
+                    m_cells[i,j].UpdateVisuals();
                 }
             }
         }

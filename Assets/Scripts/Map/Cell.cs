@@ -19,9 +19,8 @@ namespace Game
         */
         private Dictionary<Cell, float> m_adjacentCells;
 
-        [HideInInspector]
-        public GameObject m_object;
-        public Entity occupant;
+        private GameObject m_object;
+        private Entity m_occupant;
     #endregion // Attributes
 
     #region Constructors
@@ -71,9 +70,17 @@ namespace Game
         public int Id { get => m_id; set => m_id = value; }
         public Province ProvData { get => m_provData; set => m_provData = value; }
         public Dictionary<Cell, float> AdjacentCells { get => m_adjacentCells; set => m_adjacentCells = value; }
-    #endregion
+        public GameObject Object { get => m_object; set => m_object = value; }
+        public Entity Occupant { get => m_occupant; set => m_occupant = value; }
+        #endregion
 
-    #region Functions
+        #region Functions
+        // Return if the cell is occupied or not
+        public bool IsOccupied()
+        {
+            return (m_occupant != null ? true : false);
+        }
+
         // Add a new adjacent Cell to this Cell
         public bool AddAdjacentCell(Cell cell, float dist = 0)
         {
@@ -113,6 +120,11 @@ namespace Game
                 return m_adjacentCells[cell];
             
             return -1f;
+        }
+    
+        public void UpdateVisuals()
+        {
+            m_object.GetComponent<MeshRenderer>().material = m_provData.Terrain.Color;
         }
     #endregion
     } // Cell

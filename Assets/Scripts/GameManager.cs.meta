@@ -3,7 +3,13 @@ guid: e717c688d66298d4caeb5a18b42ea37d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - mainCam: {instanceID: 0}
+  - cellPrefab: {fileID: 3611252306180757151, guid: bbb6fd951e2484246868cc99bdae9b51,
+      type: 3}
+  - unitPrefab: {fileID: 7268965456542558926, guid: ee512b23266de2a46ad4f7dc394df354,
+      type: 3}
+  - selectedEntity: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

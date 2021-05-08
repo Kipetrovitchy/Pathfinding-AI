@@ -77,6 +77,13 @@ namespace Game
                 if (Physics.Raycast(ray, out hit, 1000, m_gameManager.layer))
                 {
                     m_gameManager.selectedEntity = hit.collider.gameObject;
+                    
+                    Unit unit = m_gameManager.selectedEntity.GetComponent<Unit>();
+                    if (unit)
+                    {
+                        m_gameManager.Pathfinder.ResetLists();
+                        m_gameManager.Pathfinder.GetReachableCells(m_gameManager.Map.GetCell(unit.CellId), unit.MovRange);
+                    }
                 }
                 else
                 {
@@ -93,10 +100,13 @@ namespace Game
                 if (unit)
                 {
                     Cell target = m_gameManager.Map.GetCell(pos);
-                    if (unit.MoveTo(target))
+                    if (m_gameManager.Pathfinder.reachableCells.Contains(target.Id) && unit.MoveTo(target))
                     {
-                        m_gameManager.Map.GetCell(unit.CellId).occupant = null;
+                        m_gameManager.Map.GetCell(unit.CellId).Occupant = null;
                         unit.CellId = target.Id;
+
+                        m_gameManager.Pathfinder.ResetLists();
+                        m_gameManager.Pathfinder.GetReachableCells(m_gameManager.Map.GetCell(unit.CellId), unit.MovRange);
                     }
                 }
             }

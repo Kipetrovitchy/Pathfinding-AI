@@ -8,6 +8,7 @@ namespace Game
         public Camera mainCam;
 
         private Grid m_map;
+        private PathfinderAStar m_pathfinder;
 
         public GameObject cellPrefab;
         public GameObject unitPrefab;
@@ -23,7 +24,8 @@ namespace Game
     #endregion
     #region Accessors
         public Grid Map { get => m_map; }
-    #endregion
+        public PathfinderAStar Pathfinder { get => m_pathfinder; }
+        #endregion
         // Start is called before the first frame update
         void Start()
         {
@@ -32,9 +34,11 @@ namespace Game
 
             if (m_map.Cells != null)
                 m_map.Draw(ref cellPrefab);
+
+            m_pathfinder = new PathfinderAStar();
             
             // Place the camera above the first cell
-            Vector3 pos = m_map.Cells[0, 0].m_object.transform.position;
+            Vector3 pos = m_map.Cells[0, 0].Object.transform.position;
             pos.z += 5;
             mainCam.transform.position = pos;
 
@@ -50,7 +54,7 @@ namespace Game
             m_map.UpdateVisuals();
         }
 
-        public bool CreateUnit(Cell cell, string name = "", Game.Entity.EntityType eType = 0, Sprite skin = null, Game.Unit.UnitType uType = 0, int movR = 0, int atkR = 1, int visR = 1)
+        public bool CreateUnit(Cell cell, string name = "", Game.Entity.EntityType eType = 0, Sprite skin = null, Game.Unit.UnitType uType = 0, int movR = 2, int atkR = 1, int visR = 1)
         {
             Vector3 pos = m_map.GetCellPos(cell);
 
@@ -70,7 +74,7 @@ namespace Game
                 unit.VisRange = visR;
             }
 
-            cell.occupant = unit;
+            cell.Occupant = unit;
             return false;
         }
     }

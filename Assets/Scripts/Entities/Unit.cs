@@ -137,19 +137,14 @@ namespace Game
     // Handle Unit movement
     public bool MoveTo(Cell target)
     {
-        if (target == null || target.occupant != null)
+        if (target == null || target.IsOccupied())
             return false;
 
-        Vector3 pos = target.m_object.transform.position;
+        Vector3 pos = target.Object.transform.position;
         pos.z = 0.1f;
         transform.position = pos;
 
-        target.occupant = this;
-
-        /* TODO : 
-            Get Path to target
-            Move the Unit to the target following the path
-        */
+        target.Occupant = this;
 
         return true;
     }
