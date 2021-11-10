@@ -1,0 +1,33 @@
+{"Grid": {
+    "width": 2,
+    "height": 2,
+    "cellSize": 1.00,
+    "padding": 0.00,
+    "Cells": [
+        {
+            "id": 0,
+            "name": "Paris",
+            "type": 8
+        },
+        {
+            "id": 1,
+            "name": "Cambrousse",
+            "type": 5
+        },
+        {
+            "id": 2,
+            "name": "Alpes",
+            "type": 4
+        },
+        {
+            "id": 3,
+            "name": "Cambrousse",
+            "type": 5
+        },
+        {
+            "id": 4,
+            "name": "Cambrousse",
+            "type": 5
+        }
+    ]
+}}
