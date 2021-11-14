@@ -19,12 +19,12 @@ public class ProvPanel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameManager.selectedCell != null)
+        if (gameManager.SelectedCell != null)
         {
             if (m_animator != null)
                 m_animator.SetBool("Open", true);
 
-            UpdatePanel(gameManager.selectedCell);
+            UpdatePanel(gameManager.SelectedCell);
         }
         else
         {

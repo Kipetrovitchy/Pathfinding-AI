@@ -10,27 +10,53 @@ namespace Game
         private List<Player> m_liPlayers;
         private int m_iTurn;
 
-        public Camera mainCam;
+        private Camera m_mainCam;
 
         private Grid m_map;
         private PathfinderAStar m_pathfinder;
 
-        public GameObject cellPrefab;
-        public GameObject unitPrefab;
 
-        public int columns, rows;
-        public float padding;
-        public float size;
+        [SerializeField]
+        private GameObject cellPrefab;
+        [SerializeField]
+        private GameObject unitPrefab;
 
-        public Cell selectedCell = null;
-        public GameObject selectedEntity = null;
 
-        public LayerMask layer;
-    #endregion
+        private Cell m_selectedCell = null;
+        private GameObject m_selectedEntity = null;
+
+
+        [SerializeField]
+        private LayerMask layer;
+
+
+        #region Map
+        [Header("Map Settings"), Space(10)]
+        [SerializeField]
+        private int columns;
+        [SerializeField]
+        private int rows;
+        [SerializeField]
+        private float padding;
+        [SerializeField]
+        private float size;
+        #endregion // Map
+
+        #region UI
+        [Header("UI Settings"), Space(10)]
+        [SerializeField]
+        private UnityEngine.UI.Text m_moneyDisplay;
+        #endregion // UI
+    #endregion // Attributes
+    
     #region Accessors
         public Grid Map { get => m_map; }
         public PathfinderAStar Pathfinder { get => m_pathfinder; }
-        #endregion
+
+        public Cell SelectedCell { get => m_selectedCell; set => m_selectedCell = value; }
+    #endregion // Accessors
+    
+    #region Functions
         // Start is called before the first frame update
         void Start()
         {
@@ -43,16 +69,24 @@ namespace Game
             m_pathfinder = new PathfinderAStar();
             
             // Place the camera above the first cell
-            Vector3 pos = m_map.Cells[0, 0].Object.transform.position;
-            pos.z += 5;
-            mainCam.transform.position = pos;
+            // Vector3 pos = m_map.Cells[0, 0].Object.transform.position;
+            // pos.z += 5;
+            // m_mainCam.transform.position = pos;
 
-            CreateUnit(m_map.GetCell(19));
-            
+            #region Debug
             // Test adjacent system
             //m_map.Print();
 
+            m_liPlayers[0].Money += 2000;
+            m_liPlayers[1].Money += 1000;
+            #endregion // Debug
+
+            CreateUnit(m_map.GetCell(19));
+            
+            // Start turn of Player 1
             m_liPlayers[0].StartTurn();
+            m_mainCam = m_liPlayers[0].Cam;
+            UpdateDisplay();
         }
 
         // Update is called once per frame
@@ -65,11 +99,19 @@ namespace Game
             ControlInputs();
         }
 
+        // Update the UI in function of the player's turn
+        private void UpdateDisplay()
+        {
+            m_moneyDisplay.text = m_liPlayers[m_iTurn % m_liPlayers.Count].Money.ToString();
+        }
+
         // End pending turn and start the next player's turn
         public void EndTurn()
         {
             m_liPlayers[m_iTurn++ % m_liPlayers.Count].EndTurn();
             m_liPlayers[m_iTurn % m_liPlayers.Count].StartTurn();
+
+            UpdateDisplay();
         }
 
         void ControlInputs()
@@ -81,9 +123,9 @@ namespace Game
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit, 1000, layer))
                 {
-                    selectedEntity = hit.collider.gameObject;
+                    m_selectedEntity = hit.collider.gameObject;
                     
-                    Unit unit = selectedEntity.GetComponent<Unit>();
+                    Unit unit = m_selectedEntity.GetComponent<Unit>();
                     if (unit)
                     {
                         Pathfinder.ResetLists();
@@ -92,16 +134,16 @@ namespace Game
                 }
                 else
                 {
-                    Vector3 pos = mainCam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
-                    selectedCell = Map.GetCell(pos);
+                    Vector3 pos = m_mainCam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
+                    m_selectedCell = Map.GetCell(pos);
                 }
             }
             // Right Mouse Button
-            if (selectedEntity != null && Input.GetMouseButtonDown(1))
+            if (m_selectedEntity != null && Input.GetMouseButtonDown(1))
             {
-                Vector3 pos = mainCam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
+                Vector3 pos = m_mainCam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
                 
-                Unit unit = selectedEntity.GetComponent<Unit>();
+                Unit unit = m_selectedEntity.GetComponent<Unit>();
                 if (unit)
                 {
                     Cell target = Map.GetCell(pos);
@@ -143,5 +185,6 @@ namespace Game
             cell.Occupant = unit;
             return true;
         }
+    #endregion // Functions
     }
 }
